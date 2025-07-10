@@ -72,12 +72,21 @@
     </div>
   </div>
 
-  <script>
-    function switchTab(tabId) {
-      const trigger = document.querySelector(`#${tabId}-tab`);
+ <script>
+  function switchTab(tabId) {
+    const trigger = document.querySelector(`#${tabId}-tab`);
+    if (trigger) {
       const tab = new bootstrap.Tab(trigger);
       tab.show();
     }
-  </script>
+  }
+
+  // Switch to tab based on Go template variable
+  {{ if .Tab }}
+    window.addEventListener('DOMContentLoaded', () => {
+      switchTab("{{ .Tab }}");
+    });
+  {{ end }}
+</script>
 </body>
 </html>
