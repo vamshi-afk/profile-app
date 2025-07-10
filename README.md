@@ -1,97 +1,106 @@
-# 👤 Go Profile App
+# 🐘 Go Profile App (PostgreSQL Edition)
 
-A simple web application built with Go that allows users to register, log in, and manage their profile. It uses Gorilla Mux for routing, Gorilla Sessions for session management, and SQLite for persistent storage. The UI is styled with Bootstrap 5 for a clean and responsive experience.
+A lightweight Go web application for user authentication and profile management using PostgreSQL for persistent storage. Built with Gorilla Mux for routing, Gorilla Sessions for session handling, and ready for **Render deployment**.
 
 ---
 
 ## ✨ Features
 
-- 🔐 User registration, login, and logout
-- 🔄 Cookie-based session management
-- 👤 Profile page with editable fields:
-  - Name
-  - Email
-  - Bio
-  - Hobbies
-  - Friends
-- 🛡️ Middleware-protected routes
-- 💾 SQLite3 for persistent storage
-- 🎨 Modern Bootstrap-based UI
-- 📦 Modular Go project structure
+* 📝 User Registration & Login
+* 🔐 Session-based Authentication (Cookies)
+* 🧾 Profile Management
+
+  * Name, Email, Bio, Hobbies, Friends
+* 🛡️ Protected Routes via Middleware
+* 💾 PostgreSQL Database Support
+* ☁️ Render-Ready Deployment
+* 📦 Modular and Clean Go Project Structure
 
 ---
 
 ## 📁 Folder Structure
+
 ```bash
 .
 ├── database
-│   ├── db.go            # Database connection & queries
-│   └── users.db         # SQLite3 database file
+│   └── db.go             # PostgreSQL DB logic and queries
 ├── handlers
-│   ├── auth.go          # Handlers for register/login
-│   └── profile.go       # Handler for profile view/update
+│   ├── auth.go           # Handles login, register, logout
+│   └── profile.go        # Handles profile view and update
 ├── middleware
-│   └── AuthMiddleware.go # Middleware to protect routes
+│   └── AuthMiddleware.go # Middleware for session checking
 ├── templates
-│   ├── auth.html        # Login/Register HTML
-│   └── profile.html     # Profile page HTML
+│   ├── auth.html         # Auth page (login/register)
+│   └── profile.html      # Profile dashboard
 ├── utils
-│   └── session.go       # Session store setup
-├── main.go              # App entry point
-├── go.mod               # Go module file
-├── go.sum               # Dependency checksums
-├── .gitignore           # Git ignore rules
-└── README.md            # This file
+│   └── session.go        # Gorilla session setup
+├── main.go               # Entry point
+├── go.mod                # Go module file
+├── go.sum                # Dependency checksums
+└── README.md             # You're here
 ```
----
-
-## 🚀 Getting Started
-
-### 📦 Prerequisites
-
-- Go 1.18 or higher
-- Git installed
-- SQLite (no setup needed, auto-creates DB file)
 
 ---
 
-### 🛠️ Installation & Run
+## 🚀 Getting Started (Local Dev)
+
+### ✅ Prerequisites
+
+* Go 1.18+
+* PostgreSQL installed and running
+* A PostgreSQL DB URI (e.g., `postgres://user:pass@localhost:5432/dbname?sslmode=disable`)
+
+---
+
+### 🔧 Setup & Run
 
 1. **Clone the repo**
-```bash
-git clone https://github.com/your-username/go-profile-app.git
-cd go-profile-app
-````
 
-2. **Install dependencies**
+```bash
+git clone https://github.com/your-username/profile-app.git
+cd profile-app
+```
+
+2. **Set your environment variable**
+
+```bash
+export DATABASE_URL="postgres://user:password@localhost:5432/profiledb?sslmode=disable"
+```
+
+3. **Install dependencies**
 
 ```bash
 go mod tidy
 ```
 
-3. **Run the server**
+4. **Run the app**
 
 ```bash
 go run main.go
 ```
 
-4. **Open your browser**
-   Visit: [http://localhost:8080](http://localhost:8080)
+5. Open browser:
+   👉 [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## 🧪 How to Use
+## ☁️ Deployment (Render)
 
-* Register with a unique username and password
-* Log in to access your profile
-* Edit your profile fields and save
-* Logout to clear session
+1. Go to [Render.com](https://render.com/)
+2. Create a **Web Service**:
+
+   * Environment: **Go**
+   * Build Command: `go build -o main .`
+   * Start Command: `./main`
+3. Add a **PostgreSQL Database** via Render
+4. Copy the DB URL and add it as `DATABASE_URL` in your Render app's environment variables
+5. Deploy 🚀
 
 ---
 
-## 🔐 Middleware Explained
+## 🔐 Session Middleware
 
-The app uses a simple auth middleware to protect private routes like `/profile` and `/logout`. It checks if the session contains a valid username. If not, the user is redirected to the home page.
+The `/profile` and `/logout` routes are protected using session-based middleware:
 
 ```go
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -109,21 +118,47 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 ---
 
-## 📌 Future Improvements
+## 🌐 Environment Variables
 
-* Profile picture upload support
-* Password reset/change feature
-* Flash messages with better UX
+| Key            | Required | Description                        |
+| -------------- | -------- | ---------------------------------- |
+| `DATABASE_URL` | ✅        | PostgreSQL connection string (URI) |
+
+Example:
+
+```
+DATABASE_URL=postgres://user:pass@localhost:5432/profiledb?sslmode=disable
+```
+
+---
+
+## ✅ Features in Master (PostgreSQL Branch)
+
+* Full support for persistent PostgreSQL storage
+* Compatible with Render cloud deployment
+* Auto table creation (if not exists)
+* Clean error logging and session handling
+* Safe password hashing with `bcrypt`
+
+---
+
+## 📌 Future Enhancements
+
+* Profile picture uploads
+* Flash messages (alerts)
+* Rate limiting for brute-force protection
+* Admin dashboard
 * Docker support
-* Deploy to Railway or Render
 
 ---
 
 ## 🙌 Built With
 
 * [Go](https://go.dev/)
+* [PostgreSQL](https://www.postgresql.org/)
 * [Gorilla Mux](https://github.com/gorilla/mux)
 * [Gorilla Sessions](https://github.com/gorilla/sessions)
-* [Bootstrap](https://getbootstrap.com/)
-* [SQLite](https://www.sqlite.org/index.html)
+* [Bootstrap 5](https://getbootstrap.com/)
+* [Render](https://render.com/)
 
+---
