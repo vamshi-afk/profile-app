@@ -10,6 +10,12 @@ import (
 	"profile-app/utils"
 )
 
+type AuthPageData struct {
+	Error   string
+	Success string
+	Tab     string
+}
+
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
@@ -17,7 +23,10 @@ func HashPassword(password string) (string, error) {
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("templates/auth.html"))
-	tmpl.Execute(w, nil)
+	data := AuthPageData{
+		Tab: "login",
+	}
+	tmpl.Execute(w, data)
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +41,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	if confirm != password {
 		tmpl := template.Must(template.ParseFiles("templates/auth.html"))
-		data := struct{ Error string }{"Passwords do not match"}
+		data := AuthPageData{
+			Error: "Passwords do not match",
+			Tab:   "register",
+		}
 		tmpl.Execute(w, data)
 		return
 	}
@@ -47,10 +59,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	insertErr := database.InsertUser(username, hash)
 	if insertErr != nil {
 		log.Println("Insert error: ", insertErr)
-		data := struct {
-			Error string
-			Tab   string
-		}{
+		data := AuthPageData{
 			Error: "Username Already Exist",
 			Tab:   "register",
 		}
@@ -58,16 +67,12 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, data)
 		return
 	}
-	data := struct {
-		Success string
-		Tab     string
-	}{
+	data := AuthPageData{
 		Success: "Registration Successful. Please Login",
 		Tab:     "login",
 	}
 	tmpl := template.Must(template.ParseFiles("templates/auth.html"))
 	tmpl.Execute(w, data)
-	return
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,10 +88,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Login fetch error:", err)
 		tmpl := template.Must(template.ParseFiles("templates/auth.html"))
-		data := struct {
-			Error string
-			Tab   string
-		}{
+		data := AuthPageData{
 			Error: "User not found",
 			Tab:   "register",
 		}
@@ -96,7 +98,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) != nil {
 		tmpl := template.Must(template.ParseFiles("templates/auth.html"))
-		data := struct{ Error string }{"Incorrect Password"}
+		data := AuthPageData{
+			Error: "Incorrect Password",
+			Tab:   "login",
+		}
 		tmpl.Execute(w, data)
 		return
 	}
