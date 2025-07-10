@@ -47,12 +47,12 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	insertErr := database.InsertUser(username, hash)
 	if insertErr != nil {
 		log.Println("Insert error: ", insertErr)
-		data := struct{ 
-			Error string 
-			Tab string			
+		data := struct {
+			Error string
+			Tab   string
 		}{
 			Error: "Username Already Exist",
-			Tab: "register",
+			Tab:   "register",
 		}
 		tmpl := template.Must(template.ParseFiles("templates/auth.html"))
 		tmpl.Execute(w, data)
@@ -60,10 +60,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	data := struct {
 		Success string
-		Tab string
-	} {
+		Tab     string
+	}{
 		Success: "Registration Successful. Please Login",
-		Tab: "login",
+		Tab:     "login",
 	}
 	tmpl := template.Must(template.ParseFiles("templates/auth.html"))
 	tmpl.Execute(w, data)
@@ -83,12 +83,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Login fetch error:", err)
 		tmpl := template.Must(template.ParseFiles("templates/auth.html"))
-		data := struct{
+		data := struct {
 			Error string
-			Tab string
+			Tab   string
 		}{
-			Error: "User not found"
-			Tab: "register"
+			Error: "User not found",
+			Tab:   "register",
 		}
 		tmpl.Execute(w, data)
 		return
