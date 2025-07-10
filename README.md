@@ -109,16 +109,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 ---
 
-## 📌 Future Improvements
-
-* Profile picture upload support
-* Password reset/change feature
-* Flash messages with better UX
-* Docker support
-* Deploy to Railway or Render
-
----
-
 ## 🙌 Built With
 
 * [Go](https://go.dev/)
