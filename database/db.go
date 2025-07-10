@@ -1,7 +1,8 @@
 package database
 
 import "database/sql"
-import _ "github.com/mattn/go-sqlite3"
+import _ "github.com/lib/pq"
+import "os"
 
 var DB *sql.DB
 
@@ -16,7 +17,8 @@ type ProfileData struct {
 }
 
 func Init() error {
-	db, err := sql.Open("sqlite3", "database/users.db")
+	connStr := os.Getenv("DATABASE_URL")
+	db, err := sql.Open("sqlite3", connStr)
 	if err != nil {
 		return err
 	}

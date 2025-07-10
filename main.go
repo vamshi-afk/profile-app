@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"os"
 	"profile-app/database"
 	"profile-app/handlers"
 	"profile-app/middleware"
@@ -27,6 +28,11 @@ func main() {
 	protected.HandleFunc("/profile", handlers.ProfileHandler)
 	protected.HandleFunc("/logout", handlers.LogoutHandler)
 
-	log.Println("Server running on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // fallback for local dev
+	}
+	log.Printf("Server running on http://localhost:%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
+
 }
