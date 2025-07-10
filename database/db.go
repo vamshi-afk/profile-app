@@ -1,8 +1,11 @@
 package database
 
-import "database/sql"
-import _ "github.com/lib/pq"
-import "os"
+import (
+	"database/sql"
+	"os"
+
+	_ "github.com/lib/pq"
+)
 
 var DB *sql.DB
 
@@ -18,7 +21,7 @@ type ProfileData struct {
 
 func Init() error {
 	connStr := os.Getenv("DATABASE_URL")
-	db, err := sql.Open("sqlite3", connStr)
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return err
 	}
@@ -28,39 +31,35 @@ func Init() error {
 		return err
 	}
 
-	{
-		query := `
-		CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+	query := `
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
 		username TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
 		name TEXT,
 		email TEXT,
 		bio TEXT,
 		hobbies TEXT,
-		friends TEXT 
-		);`
+		friends TEXT
+	);`
 
-		if _, err := db.Exec(query); err != nil {
-			return err
-		}
+	if _, err := db.Exec(query); err != nil {
+		return err
 	}
+
 	return nil
 }
 
 func InsertUser(username string, password string) error {
 	_, err := DB.Exec(`
 		INSERT INTO users (username, password, name, email, bio, hobbies, friends)
-		VALUES (?, ?, '', '', '', '', '')`, username, password)
-	if err != nil {
-		return err
-	}
-	return nil
+		VALUES ($1, $2, '', '', '', '', '')`, username, password)
+	return err
 }
 
 func GetHashedPassword(username string) (string, error) {
 	var hp string
-	err := DB.QueryRow("SELECT password FROM users WHERE username = ?", username).Scan(&hp)
+	err := DB.QueryRow("SELECT password FROM users WHERE username = $1", username).Scan(&hp)
 	return hp, err
 }
 
@@ -68,21 +67,23 @@ func GetProfile(username string) (ProfileData, error) {
 	var p ProfileData
 	err := DB.QueryRow(`
 		SELECT username,
-		       IFNULL(name, ''),
-		       IFNULL(email, ''),
-		       IFNULL(bio, ''),
-		       IFNULL(hobbies, ''),
-		       IFNULL(friends, '')
-		FROM users WHERE username = ?`, username).Scan(
+		       COALESCE(name, ''),
+		       COALESCE(email, ''),
+		       COALESCE(bio, ''),
+		       COALESCE(hobbies, ''),
+		       COALESCE(friends, '')
+		FROM users WHERE username = $1`, username).Scan(
 		&p.Username, &p.Name, &p.Email, &p.Bio, &p.Hobbies, &p.Friends,
 	)
 	return p, err
 }
 
 func UpdateProfile(username, name, email, bio, hobbies, friends string) error {
-	_, err := DB.Exec("UPDATE users SET name = ?, email = ?, bio = ?, hobbies = ?, friends = ? WHERE username = ?", name, email, bio, hobbies, friends, username)
-	if err != nil {
-		return err
-	}
-	return nil
+	_, err := DB.Exec(`
+		UPDATE users 
+		SET name = $1, email = $2, bio = $3, hobbies = $4, friends = $5 
+		WHERE username = $6`,
+		name, email, bio, hobbies, friends, username,
+	)
+	return err
 }
