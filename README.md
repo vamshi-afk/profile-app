@@ -119,12 +119,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 ---
 
-## 🧾 License
-
-MIT License
-
----
-
 ## 🙌 Built With
 
 * [Go](https://go.dev/)
