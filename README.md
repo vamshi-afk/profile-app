@@ -22,7 +22,7 @@ A simple web application built with Go that allows users to register, log in, an
 ---
 
 ## 📁 Folder Structure
-
+```bash
 .
 ├── database
 │   ├── db.go            # Database connection & queries
@@ -42,7 +42,7 @@ A simple web application built with Go that allows users to register, log in, an
 ├── go.sum               # Dependency checksums
 ├── .gitignore           # Git ignore rules
 └── README.md            # This file
-
+```
 ---
 
 ## 🚀 Getting Started
