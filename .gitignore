@@ -1,0 +1,13 @@
+*.exe
+*.out
+*.test
+
+database/users.db
+
+*.swp
+*.swo
+*.swn
+*~
+
+.DS_Store
+Thumbs.db
